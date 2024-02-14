@@ -33,14 +33,16 @@ function processAtRule(
         function wrap(acc: string[]): string {
           if (acc.length >= 2) {
             const [head, ...tail] = acc;
-            const name = `--${opts.prefix}${head.replaceAll(
-              '.',
-              opts.nestedThemeDelimiter,
-            )}${opts.propDelimiter}${decl.prop}`;
+            const name = `--${opts.prefix}${[
+              head.replaceAll('.', opts.nestedThemeDelimiter),
+              decl.prop.replace(/^--/g, ''),
+            ]
+              .filter(Boolean)
+              .join(opts.propDelimiter)}`;
             const out = wrap(tail);
-            return `var(${name}${out ? `, ${out}` : ''})`;
+            return `var(${name}${out ? `, ${out.replace(/^,\s*/, '')}` : ''})`;
           }
-          return acc[0]?.replace(/^,\s*/, '');
+          return acc[0];
         }
         decl.value = wrap([ns, ...fb, decl.value]);
       });
