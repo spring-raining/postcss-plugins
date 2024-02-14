@@ -1,0 +1,27 @@
+{
+  "name": "postcss-variable-theming",
+  "version": "0.0.0",
+  "description": "PostCSS plugin to provide theming function based on CSS variables using @theme rules.",
+  "author": "spring-raining <harusamex.com@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w --preserveWatchOutput",
+    "test": "node --test ./test/index.js"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.2",
+    "postcss": "^8.4.35",
+    "postcss-cli": "^11.0.0",
+    "typescript": "^5.3.3"
+  }
+}
