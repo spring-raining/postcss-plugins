@@ -1,0 +1,12 @@
+{
+  "name": "postcss-variable-theming",
+  "version": "0.0.0",
+  "description": "",
+  "author": "spring-raining <harusamex.com@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'TODO' && mkdir -p dist && touch dist/index.js",
+    "dev": "echo 'TODO' && while true; do sleep 1; done"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "postcss-plugins",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "author": "spring-raining <harusamex.com@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@8.15.2+sha256.90bb5d6382cb2cb8b8d4959a076b3953d84d1d94121717097bcd41c71344fa14",
+  "scripts": {
+    "postinstall": "husky install",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "version": "changeset version",
+    "publish": "pnpm build && changeset publish"
+  },
+  "workspaces": [
+    "plugins/*"
+  ],
+  "devDependencies": {
+    "@biomejs/biome": "^1.5.3",
+    "@changesets/cli": "^2.27.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "turbo": "^1.12.3"
+  },
+  "lint-staged": {
+    "*": [
+      "biome check --apply --no-errors-on-unmatched --files-ignore-unknown=true"
+    ]
+  }
+}
