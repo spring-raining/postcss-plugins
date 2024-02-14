@@ -5,8 +5,22 @@
   "author": "spring-raining <harusamex.com@gmail.com>",
   "license": "MIT",
   "type": "module",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "echo 'TODO' && mkdir -p dist && touch dist/index.js",
-    "dev": "echo 'TODO' && while true; do sleep 1; done"
+    "build": "tsc",
+    "dev": "tsc -w --preserveWatchOutput"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.2",
+    "postcss": "^8.4.35",
+    "postcss-cli": "^11.0.0",
+    "typescript": "^5.3.3"
   }
 }
