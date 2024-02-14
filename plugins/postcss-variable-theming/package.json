@@ -1,7 +1,7 @@
 {
   "name": "postcss-variable-theming",
   "version": "0.0.0",
-  "description": "",
+  "description": "PostCSS plugin to provide theming function based on CSS variables using @theme rules.",
   "author": "spring-raining <harusamex.com@gmail.com>",
   "license": "MIT",
   "type": "module",
