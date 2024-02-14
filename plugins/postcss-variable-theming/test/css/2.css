@@ -1,0 +1,29 @@
+@theme foo {
+  @theme bar {
+    @theme baz {
+      :root {
+        color: red;
+      }
+
+      .a {
+        color: blue;
+      }
+    }
+  }
+}
+
+@media screen {
+  @theme a {
+    :root {
+      color: green;
+    }
+  }
+}
+
+@theme b {
+  @media screen {
+    :root {
+      color: purple;
+    }
+  }
+}

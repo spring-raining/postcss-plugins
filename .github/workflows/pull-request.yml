@@ -23,8 +23,8 @@ jobs:
       - run: pnpm install
       - run: pnpm biome check . --files-ignore-unknown=true
 
-  build:
-    name: Build
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,4 +35,5 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm build
+      - run: pnpm test
 

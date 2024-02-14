@@ -15,7 +15,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w --preserveWatchOutput"
+    "dev": "tsc -w --preserveWatchOutput",
+    "test": "node --test ./test/index.js"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",

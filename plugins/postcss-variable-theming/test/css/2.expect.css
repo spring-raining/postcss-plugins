@@ -1,0 +1,20 @@
+
+      :root {
+        color: var(--foo--bar--baz-color, red);
+      }
+
+      .a {
+        color: var(--foo--bar--baz-color, blue);
+      }
+
+@media screen {
+    :root {
+      color: var(--a-color, green);
+    }
+}
+
+@media screen {
+    :root {
+      color: var(--b-color, purple);
+    }
+  }
