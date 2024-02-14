@@ -12,8 +12,8 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "test": "turbo test",
-    "version": "changeset version",
-    "publish": "pnpm build && changeset publish"
+    "ci:version": "changeset version",
+    "ci:publish": "pnpm build && changeset publish"
   },
   "workspaces": ["plugins/*"],
   "devDependencies": {
