@@ -120,6 +120,7 @@ module.exports = {
     prefix: '',
     propDelimiter: '-',
     nestedThemeDelimiter: '--',
+    atRuleName: 'var',
   })],
 };
 ```
@@ -138,3 +139,8 @@ module.exports = {
 
 * Type: `string`
 * Default: `'--'`
+
+### `atRuleName`
+
+* Type: `string`
+* Default: `var`

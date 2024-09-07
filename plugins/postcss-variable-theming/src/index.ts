@@ -1,9 +1,10 @@
-import type { AtRule, PluginCreator, Rule } from 'postcss';
+import { type AtRule, type PluginCreator, type Rule } from 'postcss';
 
 export interface PluginOptions {
   prefix?: string;
   propDelimiter?: string;
   nestedThemeDelimiter?: string;
+  atRuleName?: string;
 }
 
 const visited = Symbol('visited');
@@ -11,7 +12,7 @@ const visited = Symbol('visited');
 function processAtRule(
   parentNs: string,
   fallbacks: string[],
-  opts: { prefix: string; propDelimiter: string; nestedThemeDelimiter: string },
+  opts: Required<PluginOptions>,
 ) {
   return (atRule: AtRule) => {
     const [ctx, ...rest] = atRule.params.split(/(?<!\\),/).map((s) => s.trim());
@@ -22,7 +23,7 @@ function processAtRule(
         .map((n) => [parentNs, n].filter(Boolean).join('.')),
       ...fallbacks,
     ];
-    atRule.walkAtRules('var', processAtRule(context, fb, opts));
+    atRule.walkAtRules(opts.atRuleName, processAtRule(context, fb, opts));
     atRule.walkRules((rule: Rule & { [visited]?: boolean }) => {
       if (rule[visited]) {
         return;
@@ -57,11 +58,12 @@ const Plugin: PluginCreator<PluginOptions> = (options = {}) => {
     prefix: options.prefix ?? '',
     propDelimiter: options.propDelimiter ?? '-',
     nestedThemeDelimiter: options.nestedThemeDelimiter ?? '--',
+    atRuleName: options.atRuleName || 'var',
   };
   return {
     postcssPlugin: 'variable-theming',
     OnceExit(css) {
-      css.walkAtRules('var', processAtRule('', [], opts));
+      css.walkAtRules(opts.atRuleName, processAtRule('', [], opts));
     },
   };
 };
