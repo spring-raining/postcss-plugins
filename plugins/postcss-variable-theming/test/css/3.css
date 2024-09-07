@@ -1,12 +1,8 @@
 @var a {
-  @var-fallback x {
-    @var b {
-      @var-fallback y {
-        @var c {
-          html {
-            font-weight: bold;
-          }
-        }
+  @var b, x {
+    @var c, y {
+      html {
+        font-weight: bold;
       }
     }
   }

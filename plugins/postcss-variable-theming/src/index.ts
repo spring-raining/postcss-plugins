@@ -6,7 +6,6 @@ export interface PluginOptions {
   nestedThemeDelimiter?: string;
 }
 
-const atRuleNameFilter = /^var|var-fallback$/;
 const visited = Symbol('visited');
 
 function processAtRule(
@@ -15,15 +14,15 @@ function processAtRule(
   opts: { prefix: string; propDelimiter: string; nestedThemeDelimiter: string },
 ) {
   return (atRule: AtRule) => {
-    const context = [parentNs, atRule.params].filter(Boolean).join('.');
-    const fb = [...fallbacks];
-    let ns = parentNs;
-    if (atRule.name === 'var-fallback') {
-      fb.unshift(context);
-    } else {
-      ns = context;
-    }
-    atRule.walkAtRules(atRuleNameFilter, processAtRule(ns, fb, opts));
+    const [ctx, ...rest] = atRule.params.split(/(?<!\\),/).map((s) => s.trim());
+    const context = [parentNs, ctx].filter(Boolean).join('.');
+    const fb = [
+      ...rest
+        .filter(Boolean)
+        .map((n) => [parentNs, n].filter(Boolean).join('.')),
+      ...fallbacks,
+    ];
+    atRule.walkAtRules('var', processAtRule(context, fb, opts));
     atRule.walkRules((rule: Rule & { [visited]?: boolean }) => {
       if (rule[visited]) {
         return;
@@ -44,7 +43,7 @@ function processAtRule(
           }
           return acc[0];
         }
-        decl.value = wrap([ns, ...fb, decl.value]);
+        decl.value = wrap([context, ...fb, decl.value]);
       });
     });
     if (atRule.nodes) {
@@ -62,7 +61,7 @@ const Plugin: PluginCreator<PluginOptions> = (options = {}) => {
   return {
     postcssPlugin: 'variable-theming',
     OnceExit(css) {
-      css.walkAtRules(atRuleNameFilter, processAtRule('', [], opts));
+      css.walkAtRules('var', processAtRule('', [], opts));
     },
   };
 };
