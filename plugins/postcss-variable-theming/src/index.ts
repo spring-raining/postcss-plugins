@@ -55,9 +55,9 @@ function processAtRule(
 
 const Plugin: PluginCreator<PluginOptions> = (options = {}) => {
   const opts = {
-    prefix: options.prefix || '',
-    propDelimiter: options.propDelimiter || '-',
-    nestedThemeDelimiter: options.nestedThemeDelimiter || '--',
+    prefix: options.prefix ?? '',
+    propDelimiter: options.propDelimiter ?? '-',
+    nestedThemeDelimiter: options.nestedThemeDelimiter ?? '--',
   };
   return {
     postcssPlugin: 'variable-theming',
