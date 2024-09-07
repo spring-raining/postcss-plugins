@@ -4,7 +4,7 @@
 
 [npm-url]: https://www.npmjs.com/package/postcss-variable-theming
 
-> PostCSS plugin to provide theming function based on CSS variables using `@theme` rules.
+> PostCSS plugin to provide theming function based on CSS variables using `@var` rules.
 
 ## Installation
 
@@ -27,27 +27,27 @@ module.exports = {
 ```css
 /* Input CSS */
 
-@theme foo {
+@var foo {
   :root {
     font: 16px / 1.5;
     color: ;
   }
 }
 
-@theme-fallback heading {
-  @theme h1 {
+@var-fallback heading {
+  @var h1 {
     h1 {
       font-size: 2em;
       line-height: 1.5;
     }
   }
-  @theme h2 {
+  @var h2 {
     h2 {
       font-size: 1.5em;
       line-height: 1.5;
     }
   }
-  @theme h3 {
+  @var h3 {
     h3 {
       font-size: 1.17em;
       line-height: 1.5;
@@ -82,17 +82,17 @@ h3 {
 ```css
 /* Input CSS */
 
-@theme {
+@var {
   :root {
     --color-1: orange;
   }
-  @theme foo.bar {
+  @var foo.bar {
     :root {
       --color-2: green;
     }
   }
-  @theme foo {
-    @theme baz {
+  @var foo {
+    @var baz {
       :root {
         --color-3: purple;
       }

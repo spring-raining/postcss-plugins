@@ -6,7 +6,7 @@ export interface PluginOptions {
   nestedThemeDelimiter?: string;
 }
 
-const atRuleNameFilter = /^theme|theme-fallback$/;
+const atRuleNameFilter = /^var|var-fallback$/;
 const visited = Symbol('visited');
 
 function processAtRule(
@@ -18,7 +18,7 @@ function processAtRule(
     const context = [parentNs, atRule.params].filter(Boolean).join('.');
     const fb = [...fallbacks];
     let ns = parentNs;
-    if (atRule.name === 'theme-fallback') {
+    if (atRule.name === 'var-fallback') {
       fb.unshift(context);
     } else {
       ns = context;
