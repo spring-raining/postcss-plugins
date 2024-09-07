@@ -1,12 +1,8 @@
-@theme a {
-  @theme-fallback x {
-    @theme b {
-      @theme-fallback y {
-        @theme c {
-          html {
-            font-weight: bold;
-          }
-        }
+@var a {
+  @var b, x {
+    @var c, y {
+      html {
+        font-weight: bold;
       }
     }
   }

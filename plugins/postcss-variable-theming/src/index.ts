@@ -1,29 +1,29 @@
-import type { AtRule, PluginCreator, Rule } from 'postcss';
+import { type AtRule, type PluginCreator, type Rule } from 'postcss';
 
 export interface PluginOptions {
   prefix?: string;
   propDelimiter?: string;
   nestedThemeDelimiter?: string;
+  atRuleName?: string;
 }
 
-const atRuleNameFilter = /^theme|theme-fallback$/;
 const visited = Symbol('visited');
 
 function processAtRule(
   parentNs: string,
   fallbacks: string[],
-  opts: { prefix: string; propDelimiter: string; nestedThemeDelimiter: string },
+  opts: Required<PluginOptions>,
 ) {
   return (atRule: AtRule) => {
-    const context = [parentNs, atRule.params].filter(Boolean).join('.');
-    const fb = [...fallbacks];
-    let ns = parentNs;
-    if (atRule.name === 'theme-fallback') {
-      fb.unshift(context);
-    } else {
-      ns = context;
-    }
-    atRule.walkAtRules(atRuleNameFilter, processAtRule(ns, fb, opts));
+    const [ctx, ...rest] = atRule.params.split(/(?<!\\),/).map((s) => s.trim());
+    const context = [parentNs, ctx].filter(Boolean).join('.');
+    const fb = [
+      ...rest
+        .filter(Boolean)
+        .map((n) => [parentNs, n].filter(Boolean).join('.')),
+      ...fallbacks,
+    ];
+    atRule.walkAtRules(opts.atRuleName, processAtRule(context, fb, opts));
     atRule.walkRules((rule: Rule & { [visited]?: boolean }) => {
       if (rule[visited]) {
         return;
@@ -44,7 +44,7 @@ function processAtRule(
           }
           return acc[0];
         }
-        decl.value = wrap([ns, ...fb, decl.value]);
+        decl.value = wrap([context, ...fb, decl.value]);
       });
     });
     if (atRule.nodes) {
@@ -55,14 +55,15 @@ function processAtRule(
 
 const Plugin: PluginCreator<PluginOptions> = (options = {}) => {
   const opts = {
-    prefix: options.prefix || '',
-    propDelimiter: options.propDelimiter || '-',
-    nestedThemeDelimiter: options.nestedThemeDelimiter || '--',
+    prefix: options.prefix ?? '',
+    propDelimiter: options.propDelimiter ?? '-',
+    nestedThemeDelimiter: options.nestedThemeDelimiter ?? '--',
+    atRuleName: options.atRuleName || 'var',
   };
   return {
     postcssPlugin: 'variable-theming',
     OnceExit(css) {
-      css.walkAtRules(atRuleNameFilter, processAtRule('', [], opts));
+      css.walkAtRules(opts.atRuleName, processAtRule('', [], opts));
     },
   };
 };

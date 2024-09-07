@@ -1,6 +1,6 @@
-@theme foo {
-  @theme bar {
-    @theme baz {
+@var foo {
+  @var bar {
+    @var baz {
       :root {
         color: red;
       }
@@ -13,14 +13,14 @@
 }
 
 @media screen {
-  @theme a {
+  @var a {
     :root {
       color: green;
     }
   }
 }
 
-@theme b {
+@var b {
   @media screen {
     :root {
       color: purple;
