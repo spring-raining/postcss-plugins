@@ -34,24 +34,22 @@ module.exports = {
   }
 }
 
-@var-fallback heading {
-  @var h1 {
-    h1 {
-      font-size: 2em;
-      line-height: 1.5;
-    }
+@var h1, heading {
+  h1 {
+    font-size: 2em;
+    line-height: 1.5;
   }
-  @var h2 {
-    h2 {
-      font-size: 1.5em;
-      line-height: 1.5;
-    }
+}
+@var h2, heading {
+  h2 {
+    font-size: 1.5em;
+    line-height: 1.5;
   }
-  @var h3 {
-    h3 {
-      font-size: 1.17em;
-      line-height: 1.5;
-    }
+}
+@var h3, heading {
+  h3 {
+    font-size: 1.17em;
+    line-height: 1.5;
   }
 }
 ```

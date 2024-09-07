@@ -16,6 +16,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w --preserveWatchOutput",
+    "try": "postcss --config ./postcss.config.js",
     "test": "node --test ./test/index.js"
   },
   "devDependencies": {
