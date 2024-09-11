@@ -15,15 +15,25 @@ function processAtRule(
   opts: Required<PluginOptions>,
 ) {
   return (atRule: AtRule) => {
-    const [ctx, ...rest] = atRule.params.split(/(?<!\\),/).map((s) => s.trim());
-    const context = [parentNs, ctx].filter(Boolean).join('.');
-    const fb = [
-      ...rest
-        .filter(Boolean)
-        .map((n) => [parentNs, n].filter(Boolean).join('.')),
-      ...fallbacks,
-    ];
-    atRule.walkAtRules(opts.atRuleName, processAtRule(context, fb, opts));
+    const names = atRule.params
+      .split(/(?<!\\),/)
+      .map((s) => s.trim())
+      .map((s) => (s.includes('&') ? s : `&.${s}`));
+    const invalidNameRe = /([^.][&*]|[&*][^.])/;
+    if (names.some((n) => invalidNameRe.test(n))) {
+      // Ignore entire children
+      atRule.remove();
+      return;
+    }
+    const [context, ...fb] = names.map((n) =>
+      n
+        .replace(/&/g, parentNs)
+        .split('.')
+        .filter((s) => s && s !== '*')
+        .join('.'),
+    );
+    const rest = [...fb, ...fallbacks];
+    atRule.walkAtRules(opts.atRuleName, processAtRule(context, rest, opts));
     atRule.walkRules((rule: Rule & { [visited]?: boolean }) => {
       if (rule[visited]) {
         return;
@@ -44,7 +54,7 @@ function processAtRule(
           }
           return acc[0];
         }
-        decl.value = wrap([context, ...fb, decl.value]);
+        decl.value = wrap([context, ...rest, decl.value]);
       });
     });
     if (atRule.nodes) {

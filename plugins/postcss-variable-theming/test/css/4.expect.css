@@ -1,0 +1,7 @@
+
+    h1 {
+      font-size:var(--foo-font-size, var(--foo--bar--foo-font-size, var(--font-size)));
+    }
+      p {
+        color: var(--baz--foo-color, var(--foo-color, var(--foo--bar--foo-color, var(--color, red))));
+      }

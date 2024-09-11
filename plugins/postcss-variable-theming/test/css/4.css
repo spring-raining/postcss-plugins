@@ -1,0 +1,29 @@
+@var foo, .&. {
+  @var *, &.bar.& {
+    h1 {
+      font-size: ;
+    }
+
+    @var baz.&, . {
+      p {
+        color: red;
+      }
+    }
+  }
+}
+
+@var test {
+  @var &_x {
+    h1 {
+      --invalid: ;
+    }
+  }
+}
+
+@var * {
+  @var &* {
+    h1 {
+      --invalid: ;
+    }
+  }
+}
