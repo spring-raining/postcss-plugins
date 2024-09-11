@@ -1,5 +1,11 @@
 # postcss-variable-theming
 
+## 0.3.0
+
+### Minor Changes
+
+- 851d1c6: Support `&` and `*` characters for special purposes
+
 ## 0.2.0
 
 ### Minor Changes
