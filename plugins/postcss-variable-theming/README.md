@@ -75,6 +75,22 @@ h3 {
 }
 ```
 
+Or you can use a special `*` character as follows:
+
+```css
+@var *, heading {
+  @var h1 {
+    h1 { ... }
+  }
+  @var h2 {
+    h2 { ... }
+  }
+  @var h3 {
+    h3 { ... }
+  }
+}
+```
+
 ### Theme nesting
 
 ```css
@@ -101,6 +117,7 @@ h3 {
 
 ```css
 /* Output CSS */
+
 :root {
   --color-1: var(--color-1, orange);
 }
@@ -109,6 +126,52 @@ h3 {
 }
 :root {
   --color-3: var(--foo--baz-color-3, purple);
+}
+```
+
+### Explicit nesting specifier: `&`
+
+```css
+/* Input CSS */
+
+@var acme {
+  @var *, fallback.& {
+    @media (prefers-color-scheme: light) {
+      @var &.light {
+        :root {
+          color: #111;
+          background-color: #fff;
+        }
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      @var &.dark {
+        :root {
+          color: #fff;
+          background-color: #333;
+        }
+      }
+    }
+  }
+}
+```
+
+```css
+/* Output CSS */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: var(--acme--light-color, var(--fallback--acme-color, #111));
+    background-color: var(--acme--light-background-color,
+      var(--fallback--acme-background-color, #fff));
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: var(--acme--dark-color, var(--fallback--acme-color, #fff));
+    background-color: var(--acme--dark-background-color,
+      var(--fallback--acme-background-color, #333));
+  }
 }
 ```
 
