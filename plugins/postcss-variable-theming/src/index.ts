@@ -1,4 +1,4 @@
-import { type AtRule, type PluginCreator, type Rule } from 'postcss';
+import { type AtRule, type Declaration, type PluginCreator } from 'postcss';
 
 export interface PluginOptions {
   prefix?: string;
@@ -34,28 +34,26 @@ function processAtRule(
     );
     const rest = [...fb, ...fallbacks];
     atRule.walkAtRules(opts.atRuleName, processAtRule(context, rest, opts));
-    atRule.walkRules((rule: Rule & { [visited]?: boolean }) => {
-      if (rule[visited]) {
+    atRule.walkDecls((decl: Declaration & { [visited]?: boolean }) => {
+      if (decl[visited]) {
         return;
       }
-      rule[visited] = true;
-      rule.walkDecls((decl) => {
-        function wrap(acc: string[]): string {
-          if (acc.length >= 2) {
-            const [head, ...tail] = acc;
-            const name = `--${opts.prefix}${[
-              head.replaceAll('.', opts.nestedThemeDelimiter),
-              decl.prop.replace(/^--/g, ''),
-            ]
-              .filter(Boolean)
-              .join(opts.propDelimiter)}`;
-            const out = wrap(tail);
-            return `var(${name}${out ? `, ${out.replace(/^,\s*/, '')}` : ''})`;
-          }
-          return acc[0];
+      decl[visited] = true;
+      function wrap(acc: string[]): string {
+        if (acc.length >= 2) {
+          const [head, ...tail] = acc;
+          const name = `--${opts.prefix}${[
+            head.replaceAll('.', opts.nestedThemeDelimiter),
+            decl.prop.replace(/^--/g, ''),
+          ]
+            .filter(Boolean)
+            .join(opts.propDelimiter)}`;
+          const out = wrap(tail);
+          return `var(${name}${out ? `, ${out.replace(/^,\s*/, '')}` : ''})`;
         }
-        decl.value = wrap([context, ...rest, decl.value]);
-      });
+        return acc[0];
+      }
+      decl.value = wrap([context, ...rest, decl.value]);
     });
     if (atRule.nodes) {
       atRule.replaceWith(atRule.nodes);

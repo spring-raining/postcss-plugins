@@ -5,4 +5,10 @@
     content: var(--foo);
     --value: , ;
   }
+
+  @page {
+    size: ;
+    width: ;
+    height: ;
+  }
 }
