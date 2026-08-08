@@ -20,9 +20,9 @@
     "test": "node --test ./test/index.js"
   },
   "devDependencies": {
-    "@tsconfig/node20": "^20.1.2",
-    "postcss": "^8.4.35",
-    "postcss-cli": "^11.0.0",
-    "typescript": "^5.3.3"
+    "@tsconfig/node24": "^24.0.4",
+    "postcss": "^8.5.26",
+    "postcss-cli": "^11.0.1",
+    "typescript": "^7.0.2"
   }
 }

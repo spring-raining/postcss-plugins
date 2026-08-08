@@ -5,6 +5,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import postcss from 'postcss';
 import theming from 'postcss-variable-theming';
+
 const self = fileURLToPath(import.meta.url);
 
 const files = fs.readdirSync(path.join(self, '../css'));

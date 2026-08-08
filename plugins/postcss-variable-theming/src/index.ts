@@ -1,4 +1,4 @@
-import { type AtRule, type Declaration, type PluginCreator } from 'postcss';
+import type { AtRule, Declaration, PluginCreator } from 'postcss';
 
 export interface PluginOptions {
   prefix?: string;
