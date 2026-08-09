@@ -181,14 +181,18 @@ Variable names are derived from the property name itself, but `propAlias` lets
 you name them freely:
 
 ```js
-module.exports = {
-  plugins: [require('postcss-variable-theming')({
-    propAlias: {
-      'background-color': 'bg',
-      color: 'text',
-      '--brand': 'primary',
-    },
-  })],
+import theming from 'postcss-variable-theming';
+
+export default {
+  plugins: [
+    theming({
+      propAlias: {
+        'background-color': 'bg',
+        color: 'text',
+        '--brand': 'primary',
+      },
+    }),
+  ],
 };
 ```
 
