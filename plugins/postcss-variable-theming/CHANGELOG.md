@@ -1,5 +1,11 @@
 # postcss-variable-theming
 
+## 0.4.1
+
+### Patch Changes
+
+- 8d3d8c5: Fix the missing `dist` directory in the published package
+
 ## 0.4.0
 
 ### Minor Changes
