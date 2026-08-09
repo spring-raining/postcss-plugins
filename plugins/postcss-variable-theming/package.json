@@ -22,6 +22,10 @@
       "default": "./dist/preset.js"
     }
   },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w --preserveWatchOutput",
