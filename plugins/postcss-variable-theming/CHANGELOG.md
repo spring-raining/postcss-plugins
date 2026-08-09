@@ -1,5 +1,15 @@
 # postcss-variable-theming
 
+## 0.4.0
+
+### Minor Changes
+
+- 9dad10b: Add a `propAlias` option to name variables independently of the property name, along with `tailwindPropAlias` and `groupedPropAlias` presets exported from `postcss-variable-theming/preset`
+
+### Patch Changes
+
+- b8a3d6c: Fix to support declarations without rules
+
 ## 0.3.0
 
 ### Minor Changes
