@@ -17,9 +17,9 @@ npm install -D postcss-variable-theming
 `postcss.confg.js`:
 
 ```js
-const theming = require('postcss-variable-theming');
+import theming from 'postcss-variable-theming';
 
-module.exports = {
+export default {
   plugins: [theming()],
 };
 ```
@@ -229,10 +229,10 @@ shortening need an entry.
 holds 83 entries named after Tailwind CSS utility class prefixes:
 
 ```js
-const theming = require('postcss-variable-theming');
-const { tailwindPropAlias } = require('postcss-variable-theming/preset');
+import theming from 'postcss-variable-theming';
+import { tailwindPropAlias } from 'postcss-variable-theming/preset';
 
-module.exports = {
+export default {
   plugins: [theming({ propAlias: tailwindPropAlias })],
 };
 ```
@@ -303,14 +303,18 @@ Variable --acme-bg is generated from both "background-color" and "--bg"
 ## Options
 
 ```js
-module.exports = {
-  plugins: [require('postcss-variable-theming')({
-    prefix: '',
-    propDelimiter: '-',
-    nestedThemeDelimiter: '--',
-    atRuleName: 'var',
-    propAlias: {},
-  })],
+import theming from 'postcss-variable-theming';
+
+export default {
+  plugins: [
+    theming({
+      prefix: '',
+      propDelimiter: '-',
+      nestedThemeDelimiter: '--',
+      atRuleName: 'var',
+      propAlias: {},
+    }),
+  ],
 };
 ```
 
