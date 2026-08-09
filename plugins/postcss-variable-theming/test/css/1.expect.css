@@ -5,3 +5,9 @@
     content: var(--content, var(--foo));
     --value: var(--value, );
   }
+
+  @page {
+    size:var(--size);
+    width:var(--width);
+    height:var(--height);
+  }

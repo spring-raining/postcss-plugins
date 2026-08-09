@@ -1,0 +1,6 @@
+
+  :root {
+    --brand: var(--acme-primary, #09f);
+    border-block-end-width: var(--acme-border-b, 1px);
+    font-family: var(--acme-font-family, sans-serif);
+  }

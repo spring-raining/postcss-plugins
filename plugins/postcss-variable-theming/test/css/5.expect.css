@@ -1,0 +1,10 @@
+
+  @page {
+    size:var(--page-size);
+      @footnote {
+        display:var(--page--footnote-display);
+      }
+      @footnote ::before {
+          content:var(--page--footnote--before-content)
+      }
+  }

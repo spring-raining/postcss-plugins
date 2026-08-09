@@ -1,54 +1,66 @@
-import { type AtRule, type PluginCreator, type Rule } from 'postcss';
+import type { AtRule, Declaration, PluginCreator, Result } from 'postcss';
+
+export type PropAlias = Record<string, string>;
 
 export interface PluginOptions {
   prefix?: string;
   propDelimiter?: string;
   nestedThemeDelimiter?: string;
   atRuleName?: string;
+  propAlias?: PropAlias;
 }
 
 const visited = Symbol('visited');
 
-function processAtRule(
-  parentNs: string,
-  fallbacks: string[],
-  opts: Required<PluginOptions>,
-) {
-  return (atRule: AtRule) => {
-    const names = atRule.params
-      .split(/(?<!\\),/)
-      .map((s) => s.trim())
-      .map((s) => (s.includes('&') ? s : `&.${s}`));
-    const invalidNameRe = /([^.][&*]|[&*][^.])/;
-    if (names.some((n) => invalidNameRe.test(n))) {
-      // Ignore entire children
-      atRule.remove();
-      return;
-    }
-    const [context, ...fb] = names.map((n) =>
-      n
-        .replace(/&/g, parentNs)
-        .split('.')
-        .filter((s) => s && s !== '*')
-        .join('.'),
-    );
-    const rest = [...fb, ...fallbacks];
-    atRule.walkAtRules(opts.atRuleName, processAtRule(context, rest, opts));
-    atRule.walkRules((rule: Rule & { [visited]?: boolean }) => {
-      if (rule[visited]) {
+function createProcessor(opts: Required<PluginOptions>, result: Result) {
+  const generatedBy = new Map<string, string>();
+
+  function processAtRule(parentNs: string, fallbacks: string[]) {
+    return (atRule: AtRule) => {
+      const names = atRule.params
+        .split(/(?<!\\),/)
+        .map((s) => s.trim())
+        .map((s) => (s.includes('&') ? s : `&.${s}`));
+      const invalidNameRe = /([^.][&*]|[&*][^.])/;
+      if (names.some((n) => invalidNameRe.test(n))) {
+        // Ignore entire children
+        atRule.remove();
         return;
       }
-      rule[visited] = true;
-      rule.walkDecls((decl) => {
+      const [context, ...fb] = names.map((n) =>
+        n
+          .replace(/&/g, parentNs)
+          .split('.')
+          .filter((s) => s && s !== '*')
+          .join('.'),
+      );
+      const rest = [...fb, ...fallbacks];
+      atRule.walkAtRules(opts.atRuleName, processAtRule(context, rest));
+      atRule.walkDecls((decl: Declaration & { [visited]?: boolean }) => {
+        if (decl[visited]) {
+          return;
+        }
+        decl[visited] = true;
+        const propName =
+          opts.propAlias[decl.prop] ?? decl.prop.replace(/^--/g, '');
         function wrap(acc: string[]): string {
           if (acc.length >= 2) {
             const [head, ...tail] = acc;
             const name = `--${opts.prefix}${[
               head.replaceAll('.', opts.nestedThemeDelimiter),
-              decl.prop.replace(/^--/g, ''),
+              propName,
             ]
               .filter(Boolean)
               .join(opts.propDelimiter)}`;
+            const generator = generatedBy.get(name);
+            if (generator === undefined) {
+              generatedBy.set(name, decl.prop);
+            } else if (generator !== decl.prop) {
+              result.warn(
+                `Variable ${name} is generated from both "${generator}" and "${decl.prop}"`,
+                { node: decl },
+              );
+            }
             const out = wrap(tail);
             return `var(${name}${out ? `, ${out.replace(/^,\s*/, '')}` : ''})`;
           }
@@ -56,11 +68,13 @@ function processAtRule(
         }
         decl.value = wrap([context, ...rest, decl.value]);
       });
-    });
-    if (atRule.nodes) {
-      atRule.replaceWith(atRule.nodes);
-    }
-  };
+      if (atRule.nodes) {
+        atRule.replaceWith(atRule.nodes);
+      }
+    };
+  }
+
+  return processAtRule('', []);
 }
 
 const Plugin: PluginCreator<PluginOptions> = (options = {}) => {
@@ -69,11 +83,15 @@ const Plugin: PluginCreator<PluginOptions> = (options = {}) => {
     propDelimiter: options.propDelimiter ?? '-',
     nestedThemeDelimiter: options.nestedThemeDelimiter ?? '--',
     atRuleName: options.atRuleName || 'var',
+    propAlias: Object.assign(
+      Object.create(null) as PropAlias,
+      options.propAlias,
+    ),
   };
   return {
     postcssPlugin: 'variable-theming',
-    OnceExit(css) {
-      css.walkAtRules(opts.atRuleName, processAtRule('', [], opts));
+    OnceExit(css, { result }) {
+      css.walkAtRules(opts.atRuleName, createProcessor(opts, result));
     },
   };
 };

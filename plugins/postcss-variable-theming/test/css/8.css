@@ -1,0 +1,11 @@
+/* @options {"propAlias": "grouped"} */
+@var acme {
+  .box {
+    border-block-end-width: 1px;
+    border-block-end-color: #ccc;
+    border-start-start-radius: 4px;
+    corner-top-left-shape: bevel;
+    inline-size: 20rem;
+    min-block-size: 10rem;
+  }
+}

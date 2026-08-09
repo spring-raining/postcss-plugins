@@ -17,9 +17,9 @@ npm install -D postcss-variable-theming
 `postcss.confg.js`:
 
 ```js
-const theming = require('postcss-variable-theming');
+import theming from 'postcss-variable-theming';
 
-module.exports = {
+export default {
   plugins: [theming()],
 };
 ```
@@ -175,16 +175,146 @@ Or you can use a special `*` character as follows:
 }
 ```
 
+### Property aliases
+
+Variable names are derived from the property name itself, but `propAlias` lets
+you name them freely:
+
+```js
+import theming from 'postcss-variable-theming';
+
+export default {
+  plugins: [
+    theming({
+      propAlias: {
+        'background-color': 'bg',
+        color: 'text',
+        '--brand': 'primary',
+      },
+    }),
+  ],
+};
+```
+
+```css
+/* Input CSS */
+
+@var acme {
+  .card {
+    background-color: #fff;
+    color: #111;
+    --brand: #09f;
+    padding: 1rem;
+  }
+}
+```
+
+```css
+/* Output CSS */
+
+.card {
+  background-color: var(--acme-bg, #fff);
+  color: var(--acme-text, #111);
+  --brand: var(--acme-primary, #09f);
+  padding: var(--acme-padding, 1rem);
+}
+```
+
+Properties left out of the table keep their own name, so only the ones worth
+shortening need an entry.
+
+#### Tailwind preset
+
+`postcss-variable-theming/preset` ships ready-made tables. `tailwindPropAlias`
+holds 83 entries named after Tailwind CSS utility class prefixes:
+
+```js
+import theming from 'postcss-variable-theming';
+import { tailwindPropAlias } from 'postcss-variable-theming/preset';
+
+export default {
+  plugins: [theming({ propAlias: tailwindPropAlias })],
+};
+```
+
+| Property | Variable name |
+| --- | --- |
+| `color` | `text` |
+| `background-color` | `bg` |
+| `border-color` | `border` |
+| `padding-inline` | `px` |
+| `margin-top` | `mt` |
+| `width` | `w` |
+| `border-radius` | `rounded` |
+| `letter-spacing` | `tracking` |
+| `line-height` | `leading` |
+| `transition-duration` | `duration` |
+
+Tailwind reuses a single prefix for several properties — `text-lg` sets
+`font-size` while `text-red-500` sets `color`, and `border-2` sets
+`border-width` while `border-red-500` sets `border-color`. A name can only
+belong to one property here, so the preset hands it to the color property and
+leaves `font-size`, `border-width`, `outline-width` and
+`text-decoration-thickness` under their own names.
+
+#### Grouped preset
+
+`groupedPropAlias` moves the side, corner or axis segment of a longhand name to
+the end, so every variant of one feature shares a prefix:
+
+| Property | Variable name |
+| --- | --- |
+| `border-top-width` | `border-width-top` |
+| `border-block-end-width` | `border-width-block-end` |
+| `border-inline-start-color` | `border-color-inline-start` |
+| `border-start-start-radius` | `border-radius-start-start` |
+| `corner-top-left-shape` | `corner-shape-top-left` |
+| `inline-size` | `size-inline` |
+| `min-block-size` | `min-size-block` |
+
+All 62 standard properties whose segments run the other way around are covered,
+which keeps `--border-width-*` together instead of scattering it over
+`--border-top-width`, `--border-block-end-width` and the rest.
+
+The two presets can be merged, the later one winning:
+
+```js
+theming({ propAlias: { ...groupedPropAlias, ...tailwindPropAlias } })
+```
+
+#### Name collisions
+
+Two properties sharing one variable name would silently overwrite each other, so
+they are reported as a PostCSS warning:
+
+```css
+@var acme {
+  :root {
+    background-color: red;
+    --bg: blue;
+  }
+}
+```
+
+```
+Variable --acme-bg is generated from both "background-color" and "--bg"
+```
+
 ## Options
 
 ```js
-module.exports = {
-  plugins: [require('postcss-variable-theming')({
-    prefix: '',
-    propDelimiter: '-',
-    nestedThemeDelimiter: '--',
-    atRuleName: 'var',
-  })],
+import theming from 'postcss-variable-theming';
+
+export default {
+  plugins: [
+    theming({
+      prefix: '',
+      propDelimiter: '-',
+      nestedThemeDelimiter: '--',
+      atRuleName: 'var',
+      propAlias: {},
+    }),
+  ],
 };
 ```
 
@@ -207,3 +337,11 @@ module.exports = {
 
 * Type: `string`
 * Default: `var`
+
+### `propAlias`
+
+* Type: `Record<string, string>`
+* Default: `{}`
+
+Maps a property name to the name used in the generated variable. Custom
+properties are keyed with their leading `--` (e.g. `'--brand': 'primary'`).

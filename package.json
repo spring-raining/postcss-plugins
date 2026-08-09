@@ -6,26 +6,28 @@
   "author": "spring-raining <harusamex.com@gmail.com>",
   "license": "MIT",
   "type": "module",
-  "packageManager": "pnpm@8.15.2+sha256.90bb5d6382cb2cb8b8d4959a076b3953d84d1d94121717097bcd41c71344fa14",
+  "packageManager": "pnpm@11.20.0+sha256.34e198cb1e43237517ecedfd31f9ae26a6c0a3e5366ce58a2d05f4b21fb5f19a",
   "scripts": {
-    "postinstall": "husky install",
+    "postinstall": "husky",
     "build": "turbo build",
     "dev": "turbo dev",
     "test": "turbo test",
     "ci:version": "changeset version",
     "ci:publish": "pnpm build && changeset publish"
   },
-  "workspaces": ["plugins/*"],
+  "workspaces": [
+    "plugins/*"
+  ],
   "devDependencies": {
-    "@biomejs/biome": "^1.5.3",
-    "@changesets/cli": "^2.27.1",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.2",
-    "turbo": "^1.12.3"
+    "@biomejs/biome": "^2.5.7",
+    "@changesets/cli": "^2.31.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
+    "turbo": "^2.10.8"
   },
   "lint-staged": {
     "*": [
-      "biome check --apply --no-errors-on-unmatched --files-ignore-unknown=true"
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
     ]
   }
 }
