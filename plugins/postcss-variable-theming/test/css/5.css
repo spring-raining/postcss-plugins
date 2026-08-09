@@ -1,0 +1,16 @@
+@var page {
+  @page {
+    size: ;
+
+    @var footnote {
+      @footnote {
+        display: ;
+      }
+      @footnote ::before {
+        @var before {
+          content: ;
+        }
+      }
+    }
+  }
+}

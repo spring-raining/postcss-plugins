@@ -1,0 +1,9 @@
+
+  .card {
+    background-color: var(--acme-bg, #fff);
+    color: var(--acme-text, #111);
+    padding-inline: var(--acme-px, 1rem);
+    border-radius: var(--acme-rounded, 4px);
+    box-shadow: var(--acme-shadow, 0 1px 2px #0002);
+    font-size: var(--acme-font-size, 1rem);
+  }

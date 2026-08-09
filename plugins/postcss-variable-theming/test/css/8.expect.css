@@ -1,0 +1,9 @@
+
+  .box {
+    border-block-end-width: var(--acme-border-width-block-end, 1px);
+    border-block-end-color: var(--acme-border-color-block-end, #ccc);
+    border-start-start-radius: var(--acme-border-radius-start-start, 4px);
+    corner-top-left-shape: var(--acme-corner-shape-top-left, bevel);
+    inline-size: var(--acme-size-inline, 20rem);
+    min-block-size: var(--acme-min-size-block, 10rem);
+  }
