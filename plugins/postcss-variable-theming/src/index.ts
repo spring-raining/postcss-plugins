@@ -17,23 +17,23 @@ function createProcessor(opts: Required<PluginOptions>, result: Result) {
 
   function processAtRule(parentNs: string, fallbacks: string[]) {
     return (atRule: AtRule) => {
-      const names = atRule.params
-        .split(/(?<!\\),/)
-        .map((s) => s.trim())
-        .map((s) => (s.includes('&') ? s : `&.${s}`));
+      const names = atRule.params.split(/(?<!\\),/).map((s) => s.trim());
+      const specifiers = names.map((s) => (s.includes('&') ? s : `&.${s}`));
       const invalidNameRe = /([^.][&*]|[&*][^.])/;
-      if (names.some((n) => invalidNameRe.test(n))) {
+      if (specifiers.some((n) => invalidNameRe.test(n))) {
         // Ignore entire children
         atRule.remove();
         return;
       }
-      const [context, ...fb] = names.map((n) =>
-        n
+      const [context, ...fb] = specifiers.map((n, i) => {
+        const ns = n
           .replace(/&/g, parentNs)
           .split('.')
           .filter((s) => s && s !== '*')
-          .join('.'),
-      );
+          .join('.');
+        // A `.` name nests an anonymous theme, held as a trailing empty segment
+        return names[i] === '.' && ns ? `${ns}.` : ns;
+      });
       const rest = [...fb, ...fallbacks];
       atRule.walkAtRules(opts.atRuleName, processAtRule(context, rest));
       atRule.walkDecls((decl: Declaration & { [visited]?: boolean }) => {
@@ -46,12 +46,12 @@ function createProcessor(opts: Required<PluginOptions>, result: Result) {
         function wrap(acc: string[]): string {
           if (acc.length >= 2) {
             const [head, ...tail] = acc;
-            const name = `--${opts.prefix}${[
-              head.replaceAll('.', opts.nestedThemeDelimiter),
-              propName,
-            ]
-              .filter(Boolean)
-              .join(opts.propDelimiter)}`;
+            const themes = head ? head.split('.') : [];
+            const leaf = themes.pop() ?? '';
+            const themeName = `${themes
+              .map((theme) => `${theme}${opts.nestedThemeDelimiter}`)
+              .join('')}${leaf ? `${leaf}${opts.propDelimiter}` : ''}`;
+            const name = `--${opts.prefix}${themeName}${propName}`;
             const generator = generatedBy.get(name);
             if (generator === undefined) {
               generatedBy.set(name, decl.prop);
