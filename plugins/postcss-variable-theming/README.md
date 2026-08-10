@@ -129,6 +129,31 @@ Or you can use a special `*` character as follows:
 }
 ```
 
+A `@var` named `.` nests an anonymous theme. At the top level it adds nothing to
+the variable name, while inside another theme the nesting delimiter is kept and
+the property name follows it. Themes nested further inside keep the name they
+would have had anyway:
+
+```css
+/* Input CSS */
+
+@var foo {
+  @var . {
+    :root {
+      color: red;
+    }
+  }
+}
+```
+
+```css
+/* Output CSS */
+
+:root {
+  color: var(--foo--color, red);
+}
+```
+
 ### Explicit nesting specifier: `&`
 
 ```css
