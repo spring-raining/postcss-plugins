@@ -1,5 +1,11 @@
 # postcss-variable-theming
 
+## 0.5.0
+
+### Minor Changes
+
+- ed98e95: Support a `.` name to nest an anonymous theme, which keeps the nested theme delimiter before the property name (e.g. `--foo--color`)
+
 ## 0.4.1
 
 ### Patch Changes
