@@ -1,0 +1,5 @@
+
+  :root {
+    --content:var(--a-content);
+    --fallback: var(--a-fallback, red);
+  }

@@ -66,7 +66,9 @@ function createProcessor(opts: Required<PluginOptions>, result: Result) {
           }
           return acc[0];
         }
-        decl.value = wrap([context, ...rest, decl.value]);
+        // PostCSS keeps surrounding whitespace of custom property values,
+        // so `--x: ;` yields a whitespace-only value rather than an empty one
+        decl.value = wrap([context, ...rest, decl.value.trim()]);
       });
       if (atRule.nodes) {
         atRule.replaceWith(atRule.nodes);
