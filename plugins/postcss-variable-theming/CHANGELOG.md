@@ -1,5 +1,11 @@
 # postcss-variable-theming
 
+## 0.5.1
+
+### Patch Changes
+
+- 59fd8f8: Fix an empty custom property declaration (e.g. `--content: ;`) emitting a stray comma as `var(--a-content, )` instead of `var(--a-content)`
+
 ## 0.5.0
 
 ### Minor Changes
